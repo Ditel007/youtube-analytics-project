@@ -53,6 +53,11 @@ class Channel:
         """Геттер возвращает id канала."""
         return self.__channel_id
 
+    @channel_id.setter
+    def channel_id(self, value):
+        """Сеттер возвращает id канала."""
+        print("AttributeError: property 'channel_id' of 'Channel' object has no setter")
+
     @classmethod
     def get_service(cls):
         """Класс-метод возвращает объект для работы с YouTube API."""
@@ -71,4 +76,3 @@ class Channel:
         }
         with open(filename, 'w') as file:
             json.dump(data, file, indent=4)
-
