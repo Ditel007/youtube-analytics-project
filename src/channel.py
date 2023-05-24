@@ -33,6 +33,27 @@ class Channel:
         self.video_count = int(self.get_channel()['items'][0]['statistics']['videoCount'])
         self.views_count = int(self.get_channel()['items'][0]['statistics']['viewCount'])
 
+    def __str__(self):
+        return f'{self.title} ({self.url})'
+
+    def __add__(self, other):
+        return self.subscribers_count + other.subscribers_count
+
+    def __sub__(self, other):
+        return self.subscribers_count - other.subscribers_count
+
+    def __lt__(self, other):
+        return self.subscribers_count < other.subscribers_count
+
+    def __le__(self, other):
+        return self.subscribers_count <= other.subscribers_count
+
+    def __gt__(self, other):
+        return self.subscribers_count > other.subscribers_count
+
+    def __ge__(self, other):
+        return self.subscribers_count >= other.subscribers_count
+
     @property
     def channel(self):
         """Возвращает название канала."""
