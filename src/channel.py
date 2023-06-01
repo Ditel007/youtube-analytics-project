@@ -64,6 +64,13 @@ class Channel:
         channel = self.channel.list(id=self.__channel_id, part='snippet,statistics').execute()
         return channel
 
+    @classmethod
+    def get_video(cls, video_id):
+        return cls.youtube.videos().list(
+            part='snippet,statistics,contentDetails,topicDetails',
+            id=video_id
+        ).execute()
+
     def print_info(self):
         """Выводит в консоль информацию о канале."""
         channel = self.channel.list(id=self.__channel_id, part='snippet,statistics').execute()
