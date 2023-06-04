@@ -1,6 +1,8 @@
 import json
 import os
+import datetime
 
+import isodate
 from googleapiclient.discovery import build
 
 # YT_API_KEY скопирован из гугла и вставлен в переменные окружения
@@ -70,6 +72,47 @@ class Channel:
             part='snippet,statistics,contentDetails,topicDetails',
             id=video_id
         ).execute()
+
+    @classmethod
+    def get_playlist(cls, playlist_id):
+        return cls.youtube.playlists().list(
+            id=playlist_id,
+            part='contentDetails, snippet',
+            maxResults=50,
+        ).execute()
+
+    @classmethod
+    def get_playlist_video_ids(cls, playlist_id):
+        ids = []
+        playlist = cls.youtube.playlistItems().list(
+            playlistId=playlist_id,
+            part='contentDetails',
+            maxResults=50,
+        ).execute()
+        for video in playlist['items']:
+            ids.append(video['contentDetails']['videoId'])
+        return ids
+
+    @classmethod
+    def get_videos_duration(cls, playlist_id) -> datetime.timedelta:
+        video_response = cls.youtube.videos().list(
+            part='contentDetails,statistics',
+            id=','.join(cls.get_playlist_video_ids(playlist_id))
+        ).execute()
+        delta = datetime.timedelta()
+        for video in video_response['items']:
+            iso_8601_duration = video['contentDetails']['duration']
+            duration = isodate.parse_duration(iso_8601_duration)
+            delta += duration
+        return delta
+
+    @classmethod
+    def get_videos_in_playlist(cls, playlist_id):
+        video_response = cls.youtube.videos().list(
+            part='contentDetails,statistics',
+            id=','.join(cls.get_playlist_video_ids(playlist_id))
+        ).execute()
+        return video_response['items']
 
     def print_info(self):
         """Выводит в консоль информацию о канале."""
