@@ -1,5 +1,7 @@
 from src.channel import Channel
 
+class Error(Exception):
+    pass
 
 class Video:
     """
@@ -11,12 +13,23 @@ class Video:
     """
 
     def __init__(self, v_id):
-        self.__v_id = v_id
-        self.__video = Channel.get_video(self.__v_id)
-        self.__v_name = self.__video['items'][0]['snippet']['title']
-        self.__v_link = f'https://www.youtube.com/watch?v={self.__v_id}'
-        self.__v_views = self.__video['items'][0]['statistics']['viewCount']
-        self.__v_likes = self.__video['items'][0]['statistics']['likeCount']
+        try:
+            self.__v_id = v_id
+            self.__video = Channel.get_video(self.__v_id)
+            if len(self.__video['items']) == 0:
+                raise Error
+            self.__v_name = self.__video['items'][0]['snippet']['title']
+            self.__v_link = f'https://www.youtube.com/watch?v={self.__v_id}'
+            self.__v_views = self.__video['items'][0]['statistics']['viewCount']
+            self.__v_likes = self.__video['items'][0]['statistics']['likeCount']
+        except Error:
+            self.__video = None
+            self.__v_name = None
+            self.__v_link = None
+            self.__v_views = None
+            self.__v_likes = None
+            print("Неверно указан ID видео")
+
 
     @property
     def title(self):
@@ -35,7 +48,7 @@ class Video:
         return self.__v_views
 
     @property
-    def likes_count(self):
+    def like_count(self):
         return self.__v_likes
 
     def __str__(self):
