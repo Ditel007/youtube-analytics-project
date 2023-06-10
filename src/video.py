@@ -13,8 +13,8 @@ class Video:
     """
 
     def __init__(self, v_id):
+        self.__v_id = v_id
         try:
-            self.__v_id = v_id
             self.__video = Channel.get_video(self.__v_id)
             if len(self.__video['items']) == 0:
                 raise Error
